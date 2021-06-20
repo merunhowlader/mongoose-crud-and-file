@@ -1,12 +1,15 @@
 const express = require('express');
-
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
 const todoHandler=require('./routeHandler/todoHandler');
+const userHandler=require('./routeHandler/userHandler');
 
 
 
 const app=express();
+dotenv.config();
+
 
 app.use(express.json());
 
@@ -20,6 +23,7 @@ mongoose.connect('mongodb://localhost/todos',{
 
 
 app.use('/todo',todoHandler);
+app.use('/user',userHandler);
 //file multer
 
 // const multer = require('multer');
@@ -74,30 +78,34 @@ app.use('/todo',todoHandler);
 // });
 
 
-function errorHandler(err,req,res,nest){
+const errorHandler=(err,req,res,nest)=>{
     if(res.headersSent){
         return next(err);
     }
     res.status(500).json({error:err});
 }
 
-app.use((err,req,res,next)=>{
+// app.use((err,req,res,next)=>{
 
-    if(err){
-        if(err ){
-            res.status(500).send("there was an upload error");
+//     if(err){
+//         if(err ){
+//             res.status(500).send(err.message);
 
-        }
-        else{
-            res.status(500).send(err.message);
+//         }
+//         else{
+//             res.status(500).send(err.message);
 
-        }
+//         }
         
-    }
-    else{
-        res.send("success");
-    }
-})
+//     }
+//     else{
+//         res.send("success");
+//     }
+// })
+
+
+
+app.use(errorHandler);
 
 app.listen(3000,()=>{
     console.log("app listening at gg port 3000");
